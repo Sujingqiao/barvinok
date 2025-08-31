@@ -1,0 +1,177 @@
+为了将 **Barvinok 库** 的源文件组织成一个逻辑依赖的拓扑图，我们需要理解各个文件的功能及其相互关系。Barvinok 是一个用于**计算整数点计数和 Ehrhart 多项式的库**，主要用于多面体分析、组合优化等领域。
+
+### 源码目录结构与核心模块
+
+首先，我们根据功能将这些文件分为几个主要模块：
+
+1. **基础数学运算**
+2. **多面体操作**
+3. **Ehrhart 系列算法**
+4. **接口与工具**
+5. **测试与验证**
+
+#### 1. 基础数学运算
+- `bernoulli.c`, `bernoulli.h`: 计算 Bernoulli 数。
+- `binomial.c`, `binomial.h`: 组合数（二项式系数）计算。
+- `mpz_divisible_p.c`: 整除性检查。
+- `reducer.cc`, `reducer.h`: 基础约简算法。
+- `vector_partition_chambers.c`: 向量分区腔室相关函数。
+
+#### 2. 多面体操作
+- `hull.c`, `hull.h`: 凸包计算。
+- `remove_equalities.c`, `remove_equalities.h`: 移除等式约束。
+- `scale.c`, `scale.h`: 缩放操作。
+- `sample.c`: 样本生成。
+- `volume.c`, `volume.h`: 计算体积。
+- `polyhedron_integer_hull.c`: 多面体整数凸包。
+- `cone_integer_hull.c`: 锥体整数凸包。
+- `lattice_width.c`, `lattice_width.h`: 格宽计算。
+- `vertex_cone.cc`, `vertex_cone.h`: 顶点锥体计算。
+- `cone_hilbert_basis.c`: 锥体 Hilbert 基础。
+
+#### 3. Ehrhart 系列算法
+- `barvinok_ehrhart_options.c`, `barvinok_ehrhart_options.h`: Ehrhart 相关选项配置。
+- `barvinok_ehrhart.cc`: Ehrhart 多项式计算主函数。
+- `verif_ehrhart.c`, `verif_ehrhart.h`: 验证 Ehrhart 多项式。
+- `series.cc`: 级数处理。
+- `skewed_genfun.cc`, `skewed_genfun.h`: 偏斜生成函数。
+- `genfun_constructor.cc`, `genfun_constructor.h`: 生成函数构造器。
+- `summate.c`, `summate.h`: 求和操作。
+- `barvinok_summate.c`: Barvinok 特定求和算法。
+
+#### 4. 接口与工具
+- `iscc.c`: 主程序入口，命令行工具。
+- `interface/`: 提供与其他系统或库的接口。
+- `isl/`: ISL 库集成，提供多面体表示与操作。
+- `pet/`: Polyhedral Extraction Tool (PET) 集成。
+- `polylib/`: PolyLib 集成。
+- `polymake/`: Polymake 集成。
+- `topcom.c`, `topcom.h`: TOPCOM 库集成。
+- `util.c`: 辅助函数集合。
+- `mat_util.cc`, `mat_util.h`: 矩阵辅助函数。
+- `dpoly.cc`, `dpoly.h`: 多项式操作。
+- `conversion.cc`, `conversion.h`: 数据类型转换。
+
+#### 5. 测试与验证
+- `check_approx.sh.in`, `check_enumerate_e.sh.in`, `check_enumerate.sh.in`, `check_euler.sh.in`, `check_iscc.sh.in`, `check_lexmin.sh.in`, `check_pwqp.sh.in`, `check_union.sh.in`: 自动化测试脚本。
+- `testsets/`: 测试数据集。
+- `tests/`: 单元测试代码。
+- `randomtest.c`: 随机测试。
+- `verify_series.cc`, `verify_series.h`: 验证实现正确性。
+
+---
+
+## **逻辑依赖拓扑图**
+
+基于上述分类，我们可以构建一个简化版的逻辑依赖拓扑图。注意，实际项目中可能存在更复杂的依赖关系，以下仅为示例：
+
+```markdown
+# Barvinok Library Dependency Graph
+
+## 1. 基础数学运算
+### bernoulli
+- bernoulli.c -> bernoulli.h
+### binomial
+- binomial.c -> binomial.h
+### reducer
+- reducer.cc -> reducer.h
+### vector_partition_chambers
+- vector_partition_chambers.c
+
+## 2. 多面体操作
+### hull
+- hull.c -> hull.h
+### remove_equalities
+- remove_equalities.c -> remove_equalities.h
+### scale
+- scale.c -> scale.h
+### sample
+- sample.c
+### volume
+- volume.c -> volume.h
+### polyhedron_integer_hull
+- polyhedron_integer_hull.c
+### cone_integer_hull
+- cone_integer_hull.c
+### lattice_width
+- lattice_width.c -> lattice_width.h
+### vertex_cone
+- vertex_cone.cc -> vertex_cone.h
+### cone_hilbert_basis
+- cone_hilbert_basis.c
+
+## 3. Ehrhart 系列算法
+### barvinok_ehrhart
+- barvinok_ehrhart_options.c -> barvinok_ehrhart_options.h
+- barvinok_ehrhart.cc
+- verif_ehrhart.c -> verif_ehrhart.h
+- series.cc
+- skewed_genfun.cc -> skewed_genfun.h
+- genfun_constructor.cc -> genfun_constructor.h
+- summate.c -> summate.h
+- barvinok_summate.c
+
+## 4. 接口与工具
+### iscc
+- iscc.c
+### interface
+- [具体实现]
+### isl
+- [ISL 库集成]
+### pet
+- [Polyhedral Extraction Tool 集成]
+### polylib
+- [PolyLib 集成]
+### polymake
+- [Polymake 集成]
+### topcom
+- topcom.c -> topcom.h
+### util
+- util.c
+### mat_util
+- mat_util.cc -> mat_util.h
+### dpoly
+- dpoly.cc -> dpoly.h
+### conversion
+- conversion.cc -> conversion.h
+
+## 5. 测试与验证
+### check_scripts
+- check_approx.sh.in
+- check_enumerate_e.sh.in
+- check_enumerate.sh.in
+- check_euler.sh.in
+- check_iscc.sh.in
+- check_lexmin.sh.in
+- check_pwqp.sh.in
+- check_union.sh.in
+### testsets
+- [测试数据集]
+### tests
+- [单元测试代码]
+### randomtest
+- randomtest.c
+### verify_series
+- verify_series.cc -> verify_series.h
+```
+
+---
+
+### **详细说明**
+
+1. **基础数学运算模块**
+   - 这些文件提供了基本的数学运算支持，如 Bernoulli 数、组合数、向量分区等。它们是其他模块的基础。
+
+2. **多面体操作模块**
+   - 包含了各种多面体相关的操作，如凸包、移除等式约束、缩放、采样、体积计算等。这些功能对于多面体分析至关重要。
+
+3. **Ehrhart 系列算法模块**
+   - 这个模块实现了 Ehrhart 多项式的计算以及相关的高级算法，如级数处理、偏斜生成函数等。它是 Barvinok 库的核心功能之一。
+
+4. **接口与工具模块**
+   - 提供了与其他库（如 ISL、PolyLib、Polymake、TOPCOM）的集成接口，并包含了一些实用工具，如矩阵操作、数据类型转换等。
+
+5. **测试与验证模块**
+   - 包含了大量的自动化测试脚本和单元测试代码，确保库的稳定性和准确性。
+
+通过这种分层和模块化的结构，Barvinok 库能够高效地进行多面体分析和 Ehrhart 多项式的计算。每个模块都专注于特定的任务，减少了耦合度，便于维护和扩展。
